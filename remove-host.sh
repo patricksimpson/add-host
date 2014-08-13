@@ -119,7 +119,6 @@ then
   sed "/$host/d" ports > $BASEPATH/temp/ports
   rm ports
   mv $BASEPATH/temp/ports ports
-  rm $BASEPATH/temp/ports
 fi
 
 sudo apachectl restart && sudo nginx -s stop && sudo nginx;
