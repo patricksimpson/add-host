@@ -19,6 +19,16 @@ Change your configuration files to match your system specifications
 
 Prompts for a local hostname, port, apache(yes/no), and source location (based on your configuration checkout)
 
+## (preferrred) Running
+
+    ./add-host.sh -f sites/example.dev.yml
+
+## Removing host
+
+    ./remove-host.sh
+or
+    ./remove-host.sh -f sites/example.dev.yml
+
 A YML config file will be created for you in sites/
 
 # Add a YML site
