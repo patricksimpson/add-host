@@ -1,0 +1,4 @@
+host: example.dev
+port: 3000
+apache: no
+src: example-web

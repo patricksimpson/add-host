@@ -1,0 +1,40 @@
+##
+# Host Database
+#
+# localhost is used to configure the loopback interface
+# when the system is booting.  Do not change this entry.
+##
+127.0.0.1	localhost
+255.255.255.255	broadcasthost
+::1             localhost
+fe80::1%lo0	localhost
+
+127.0.0.1 dist.drive.dev
+127.0.0.1 drive.dev
+127.0.0.1 wp.oamm.net
+127.0.0.1 j2dwoodworking.dev
+127.0.0.1 swap.oamm.net
+127.0.0.1 selfenroll.dev
+127.0.0.1 countrybulkbarn.dev
+72.9.40.135 dev.greatcdltraining.com
+127.0.0.1 seesparkbox.dev
+127.0.0.1 stevensonschool.dev
+#173.203.100.143 seesparkbox.com
+192.168.1.18 blog.patricksimpson.me
+192.168.33.10 local.dev
+127.0.0.1 otc.dev
+127.0.0.1 msj.dev
+127.0.0.1 shopit.dev
+127.0.0.1 patricksimpson.dev
+127.0.0.1 whitelotus.dev
+127.0.0.1 coffeetalk.dev
+127.0.0.1 oamm.dev
+127.0.0.1 miker.dev
+127.0.0.1 test.dev
+127.0.0.1 focus.dev
+
+127.0.0.1 secure.oamm.dev
+127.0.0.1 menu.oamm.dev
+127.0.0.1 swap.oamm.dev
+127.0.0.1 listed.dev
+127.0.0.1 beatport.dev
