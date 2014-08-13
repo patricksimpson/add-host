@@ -19,7 +19,7 @@ Change your configuration files to match your system specifications
 
 Prompts for a local hostname, port, apache(yes/no), and source location (based on your configuration checkout)
 
-## (preferrred) Running
+## Optional (preferred) run:
 
     ./add-host.sh -f sites/example.dev.yml
 
