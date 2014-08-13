@@ -75,7 +75,7 @@ if [ "$apache" = "yes" ] || [ "$apache" = "y" ]; then
 
 
 else
-  echo "Removing config file for passenger server"
+  echo "Removing config file for passenger server."
   CONFIG_FILE=$BASEPATH/src/nginx.other
   NEW_CONFIG_FILE=$BASEPATH/hosts/$host.nginx
   TEMP_CONFIG_FILE=$BASEPATH/temp/nginx.other
@@ -105,10 +105,21 @@ grep -q "$host" /etc/hosts
 
 if [ $? -eq $SUCCESS ]
 then
-  echo "removing from hosts file"
+  echo "Removing from hosts file."
   cp /etc/hosts $BASEPATH/temp/hosts.backup
   sed "/$host/d" /etc/hosts > $BASEPATH/temp/hosts
   sudo mv $BASEPATH/temp/hosts /etc/hosts
+fi
+
+grep -q "$host" ports
+
+if [ $? -eq $SUCCESS ]
+then
+  echo "Removing from ports file."
+  sed "/$host/d" ports > $BASEPATH/temp/ports
+  rm ports
+  mv $BASEPATH/temp/ports ports
+  rm $BASEPATH/temp/ports
 fi
 
 sudo apachectl restart && sudo nginx -s stop && sudo nginx;
