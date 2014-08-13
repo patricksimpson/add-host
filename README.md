@@ -26,7 +26,9 @@ Prompts for a local hostname, port, apache(yes/no), and source location (based o
 ## Removing host
 
     ./remove-host.sh
+
 or
+    
     ./remove-host.sh -f sites/example.dev.yml
 
 A YML config file will be created for you in sites/
