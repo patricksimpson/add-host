@@ -10,7 +10,24 @@ A shell script to add to nginx/apache and hosts
     chmod +x remove-host.sh
 
 ## !important;
-Change your configuration files to match your system specifications
+Change your configuration files to match your system specifications:
+
+Example:
+
+    # Source directory/path.
+    SRCPATH: /Users/[yourusername]/github
+    
+    # Where your apache source files are located.
+    APACHE_SRCPATH: /Users/[yourusername]/src/www
+    
+    # NGINX source files.
+    NGINX_SRCPATH: /var/www
+    
+    # Your apache config files.
+    APACHE_BASEPATH: /etc/apache2
+    
+    # Your NGINX config files.
+    NGINX_BASEPATH: /etc/nginx
 
 
 # Running
