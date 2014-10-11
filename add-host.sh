@@ -1,5 +1,5 @@
 #!/bin/bash
-SCRIPTDIR=/Users/patrick/shellscripts/add-host
+SCRIPTDIR=/Users/patrick/sh/add-host
 BASEPATH=$SCRIPTDIR
 SUCCESS=0
 
@@ -144,7 +144,7 @@ if [ $SRCPATH ]; then
   if [ -d $NGINX_SRCPATH/$host ]; then
     echo "Omitting link to nginx source files"
   else
-    ln -s $src/$SRCPATH $NGINX_SRCPATH/$host
+    ln -s $SRCPATH/$src $NGINX_SRCPATH/$host
   fi
 fi
 

@@ -7,4 +7,4 @@ NGINX_SRCPATH: /var/www
 # Your apache config files.
 APACHE_BASEPATH: /etc/apache2
 # Your NGINX config files.
-NGINX_BASEPATH: /etc/nginx
+NGINX_BASEPATH: /usr/local/etc/nginx
