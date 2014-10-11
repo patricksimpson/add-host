@@ -1,7 +1,7 @@
 # Source directory/path.
-SRCPATH: /Users/[yourusername]/github
+SRCPATH: /Users/patrick/github
 # Where your apache source files are located.
-APACHE_SRCPATH: /Users/[yourusername]/src/www
+APACHE_SRCPATH: /var/www
 # NGINX source files.
 NGINX_SRCPATH: /var/www
 # Your apache config files.

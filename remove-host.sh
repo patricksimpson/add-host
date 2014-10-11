@@ -1,7 +1,11 @@
-#!/bin/bash
-source 'inc/functions.sh'
+#enabled!/bin/bash
+SCRIPTDIR=/Users/patrick/shellscripts/add-host
+BASEPATH=$SCRIPTDIR
+SUCCESS=0
 
-eval $(parse_yaml config/config.yml)
+source "$BASEPATH/inc/functions.sh"
+
+eval $(parse_yaml $BASEPATH/config/config.yml)
 
 while getopts ":f:" opt; do
   case $opt in
@@ -33,8 +37,6 @@ echo $host
 
 echo "Removing host..."
 
-BASEPATH=${PWD}
-SUCCESS=0
 
 if [ "$apache" = "yes" ] || [ "$apache" = "y" ]; then
   echo "Removing apache config files..."
@@ -43,9 +45,10 @@ if [ "$apache" = "yes" ] || [ "$apache" = "y" ]; then
   APACHE_NEW_CONFIG_FILE=$BASEPATH/hosts/$host.apache
   APACHE_TEMP_CONFIG_FILE=$BASEPATH/temp/apache.temp
 
-  if [ -e $apache_NEW_CONFIG_FILE ]
+  if [ -e $APACHE_NEW_CONFIG_FILE ]
   then
-    rm $apache_NEW_CONFIG_FILE
+    echo "delete $APACHE_NEW_CONFIG_FILE"
+    rm $APACHE_NEW_CONFIG_FILE
   fi
 
   NGINX_CONFIG_FILE=$BASEPATH/src/nginx.apache
@@ -54,22 +57,27 @@ if [ "$apache" = "yes" ] || [ "$apache" = "y" ]; then
 
   if [ -e $NGINX_NEW_CONFIG_FILE ]
   then
+    echo "delete $NGINX_NEW_CONFIG_FILE"
     rm $NGINX_NEW_CONFIG_FILE
   fi
 
-  if [ -e $apache_BASEPATH/sites-enabled/$host ]; then
-    sudo rm $apache_BASEPATH/sites-enabled/$host
+  if [ -h $APACHE_BASEPATH/sites-enabled/$host ]; then
+    echo "delete $APACHE_BASEPATH/sites-enabled/$host"
+    sudo rm $APACHE_BASEPATH/sites-enabled/$host
   fi
 
   if [ -h $NGINX_BASEPATH/sites-enabled/$host ]; then
+    echo "delete $NGINX_BASEPATH/sites-enabled/$host"
     rm $NGINX_BASEPATH/sites-enabled/$host
   fi
 
-  if [ $SRCDIR ]; then
-    if [ -h $apache_SRCPATH/$host ]; then
-      echo "Omitting link to apache source files"
+  if [ $SRCPATH ]; then
+    if [ -h $APACHE_SRCPATH/$host ]; then
+      echo "delete $APACHE_SRCPATH/$host"
+      rm $APACHE_SRCPATH/$host
     else
-      ln -s $src/$SRCDIR $apache_SRCPATH/$host
+      echo "Omitting: apache source files link already deleted."
+      echo "Omitted: rm $APACHE_SRCPATH/$host"
     fi
   fi
 
@@ -89,15 +97,15 @@ else
     echo "Removing nginx link"
     rm $NGINX_BASEPATH/sites-enabled/$host
   else
-    echo "nginx link already deleted."
+    echo "Omitting: nginx link already deleted."
   fi
 fi
 
-if [ $SRCDIR ]; then
-  if [ -d $NGINX_SRCPATH/$host ]; then
-    echo "Omitting link to nginx source files"
+if [ $SRCPATH ]; then
+  if [ -h $NGINX_SRCPATH/$host ]; then
+    rm $NGINX_SRCPATH/$host
   else
-    ln -s $src/$SRCDIR $NGINX_SRCPATH/$host
+    echo "Omitting: link to nginx source files already deleted."
   fi
 fi
 
@@ -111,14 +119,14 @@ then
   sudo mv $BASEPATH/temp/hosts /etc/hosts
 fi
 
-grep -q "$host" ports
+grep -q "$host" $BASEPATH/ports
 
 if [ $? -eq $SUCCESS ]
 then
   echo "Removing from ports file."
-  sed "/$host/d" ports > $BASEPATH/temp/ports
-  rm ports
-  mv $BASEPATH/temp/ports ports
+  sed "/$host/d" $BASEPATH/ports > $BASEPATH/temp/ports
+  rm $BASEPATH/ports
+  mv $BASEPATH/temp/ports $BASEPATH/ports
 fi
 
 sudo apachectl restart && sudo nginx -s stop && sudo nginx;

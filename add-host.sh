@@ -1,6 +1,10 @@
 #!/bin/bash
-source 'inc/functions.sh'
-eval $(parse_yaml config/config.yml)
+SCRIPTDIR=/Users/patrick/shellscripts/add-host
+BASEPATH=$SCRIPTDIR
+SUCCESS=0
+
+source "$BASEPATH/inc/functions.sh"
+eval $(parse_yaml $BASEPATH/config/config.yml)
 
 while getopts ":f:" opt; do
   case $opt in
@@ -34,7 +38,7 @@ fi
 
 echo $host
 
-if [ -e sites/$host.yml ]; then
+if [ -e $BASEPATH/sites/$host.yml ]; then
   if [ -z $OPTARG ]; then
     echo ""
     echo "##############################"
@@ -45,13 +49,12 @@ if [ -e sites/$host.yml ]; then
   fi
 else
   echo "Creating YML config file for future reference."
-  echo "host: $host" >> sites/$host.yml
-  echo "port: $port" >> sites/$host.yml
-  echo "apache: $apache" >> sites/$host.yml
-  echo "src: $src" >> sites/$host.yml
+  echo "host: $host" >> $BASEPATH/sites/$host.yml
+  echo "port: $port" >> $BASEPATH/sites/$host.yml
+  echo "apache: $apache" >> $BASEPATH/sites/$host.yml
+  echo "src: $src" >> $BASEPATH/sites/$host.yml
 fi
 
-BASEPATH=${PWD}
 SUCCESS=0
 
 if [ "$apache" = "yes" ] || [ "$apache" = "y" ]; then
@@ -81,23 +84,23 @@ if [ "$apache" = "yes" ] || [ "$apache" = "y" ]; then
   sed "s/HOSTNAME/$host/g" $NGINX_CONFIG_FILE > $NGINX_TEMP_CONFIG_FILE && mv $NGINX_TEMP_CONFIG_FILE $NGINX_NEW_CONFIG_FILE
   sed "s/PORT/$port/g" $NGINX_NEW_CONFIG_FILE > $NGINX_TEMP_CONFIG_FILE && mv $NGINX_TEMP_CONFIG_FILE $NGINX_NEW_CONFIG_FILE
 
-  if [ -e $APACHE_BASEPATH/sites-enabled/$host ]; then
+  if [ -h $APACHE_BASEPATH/sites-enabled/$host ]; then
     echo "Omitting link to apache config."
   else
     sudo ln -s $APACHE_NEW_CONFIG_FILE /etc/apache2/sites-enabled/$host
   fi
 
-  if [ -e $NGINX_BASEPATH/sites-enabled/$host ]; then
+  if [ -h $NGINX_BASEPATH/sites-enabled/$host ]; then
     echo "Omitting link to nginx config."
   else
     ln -s $NGINX_NEW_CONFIG_FILE $NGINX_BASEPATH/sites-enabled/$host
   fi
 
-  if [ $SRCDIR ]; then
-    if [ -d $APACHE_SRCPATH/$host ]; then
+  if [ $SRCPATH ]; then
+    if [ -h $APACHE_SRCPATH/$host ]; then
       echo "Omitting link to apache source files"
     else
-      ln -s $src/$SRCDIR $APACHE_SRCPATH/$host
+      ln -s $SRCPATH/$src $APACHE_SRCPATH/$host
     fi
   fi
 
@@ -137,11 +140,11 @@ else
 
 fi
 
-if [ $SRCDIR ]; then
+if [ $SRCPATH ]; then
   if [ -d $NGINX_SRCPATH/$host ]; then
     echo "Omitting link to nginx source files"
   else
-    ln -s $src/$SRCDIR $NGINX_SRCPATH/$host
+    ln -s $src/$SRCPATH $NGINX_SRCPATH/$host
   fi
 fi
 
@@ -157,7 +160,7 @@ fi
 
 sudo apachectl restart && sudo nginx -s stop && sudo nginx;
 
-echo "$host $port" >> ports
+echo "$host $port" >> $BASEPATH/ports
 
 echo "complete!"
 
