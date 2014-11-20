@@ -1,17 +1,2 @@
-example.dev 3000
-newport.dev 8370
-list.dev 7435
-new-local.beatport.com 8370
-iwud.izerop.dev 8080
-jhusm.izerop.dev 8080
-navcon.izerop.dev 8080
-fbicai.izerop.dev 8080
-wordpress.dev 8080
-cornerstone.dev 8080
-patricksimpson.dev 8080
-menu.oamm.dev 3100
-secure.oamm.dev 3101
-swap.oamm.dev 5340
-oamm.dev 8080
-wonderfulmachine.dev 8080
-polymer-test.dev 80
+HOSTNAME: PORT
+======================
