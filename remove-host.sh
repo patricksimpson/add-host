@@ -1,4 +1,4 @@
-#enabled!/bin/bash
+#!/bin/bash
 SCRIPTDIR=/Users/patrick/sh/add-host
 BASEPATH=$SCRIPTDIR
 SUCCESS=0
