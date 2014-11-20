@@ -35,17 +35,11 @@ while [ "$1" != "" ]; do
          src=`pwd`
         fi
         ;;
-      * )
-        if [ "$remove" != "" ]
-        then
-          filename=$1
-        fi
-        ;;
   esac
   shift
 done
 
-if [ $add != "" ]
+if [ "$add" != "" ]
 then
   opts=
   if [ "$filename" != "" ]
@@ -62,11 +56,18 @@ then
     opts="-d $src"
   fi
   echo "running command $BASEPATH/add-hosts.sh $opts"
-  exit
   $BASEPATH/add-host.sh $opts
+  exit
 fi
 
-if [ $remove != "" ]
+if [ "$remove" != "" ]
 then
-  $BASEPATH/remove-host.sh
+  opts=
+  if [ "$filename" != "" ]
+  then
+    opts="-f $filename"
+  fi
+  echo "running command $BASEPATH/remove-hosts.sh $opts"
+  $BASEPATH/remove-host.sh $opts
+  exit
 fi

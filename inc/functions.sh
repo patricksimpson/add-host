@@ -10,6 +10,15 @@ function usage_remove
       echo "usage: removehost [[[-f host ] [ls | l ]]]"
 }
 
+function usage_hosts
+{
+      echo "usage: hosts [[add | a | remove | rm] [-f | --file] [ ports ] [ ls | l ]]"
+      echo "add | a       Invoke the add-host command"
+      echo "remove | rm   Invoke the remove-host command"
+      echo "-f --file     The configuration file, in $BASEPATH/sites"
+      echo "ports         Lists the currently used ports per hostname"
+      echo "ls | l        Lists the hosts configuration files"
+}
 function parse_yaml {
    local prefix=$2
    local s='[[:space:]]*' w='[a-zA-Z0-9_]*' fs=$(echo @|tr @ '\034')
