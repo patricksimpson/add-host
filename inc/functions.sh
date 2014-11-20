@@ -1,5 +1,15 @@
 #/bin/bash
 
+function usage
+{
+      echo "usage: addhost [[[-f configfile ] [-d /path/to/source/files]]]"
+}
+
+function usage_remove
+{
+      echo "usage: removehost [[[-f host ] [ls | l ]]]"
+}
+
 function parse_yaml {
    local prefix=$2
    local s='[[:space:]]*' w='[a-zA-Z0-9_]*' fs=$(echo @|tr @ '\034')

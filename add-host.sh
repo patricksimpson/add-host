@@ -6,11 +6,6 @@ SUCCESS=0
 source "$BASEPATH/inc/functions.sh"
 eval $(parse_yaml $BASEPATH/config/config.yml)
 
-function usage
-{
-      echo "usage: addhost [[[-f configfile ] [-d /path/to/source/files]]]"
-}
-
 filename=
 dir=
 
@@ -27,7 +22,7 @@ while [ "$1" != "" ]; do
         . )                     src=`pwd`
                                 echo "using $src"
                                 ;;
-        -h | --help)           usage
+        -h | --help)            usage
                                 exit
                                 ;;
         * )                     usage
@@ -47,16 +42,16 @@ if [ -z "$host" ]; then
 fi
 
 if [ -z "$apache" ]; then
-  printf "Apache [yes/no]?: "
+  printf "Apache (yes/no)?: "
   read apache
 fi
 
 if [ "$apache" == "y" ] || [ "$apache" == "yes" ]; then
-  port=8080
+  port=$APACHE_PORT
 fi
 
 if [ -z "$port" ]; then
-  printf "Port (press enter for static): "
+  printf "Port (Enter for static): "
   read port
 fi
 
@@ -199,8 +194,14 @@ fi
 
 sudo apachectl restart && sudo nginx -s stop && sudo nginx;
 
-echo "$host $port" >> $BASEPATH/ports
+grep -q "$host" $BASEPATH/ports
 
-echo "complete!"
+if [ $? -eq $SUCCESS ]
+then
+  echo "Omitting append to ports file."
+else
+  echo "Appending $host to ports file."
+  echo "$host $port" >> $BASEPATH/ports
+fi
 
-
+echo "$host added!"

@@ -8,3 +8,5 @@ NGINX_SRCPATH: /var/www
 APACHE_BASEPATH: /etc/apache2
 # Your NGINX config files.
 NGINX_BASEPATH: /usr/local/etc/nginx
+# Your default apache PORT
+APACHE_PORT: 8080

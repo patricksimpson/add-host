@@ -7,36 +7,81 @@ source "$BASEPATH/inc/functions.sh"
 
 eval $(parse_yaml $BASEPATH/config/config.yml)
 
-while getopts ":f:" opt; do
-  case $opt in
-    f)
-      echo "-f was triggered, Parameter: $OPTARG" >&2
-      eval $(parse_yaml $OPTARG)
-      ;;
-    \?)
-      echo "Invalid option: -$OPTARG" >&2
-      exit 1
-      ;;
-  esac
+filename=
+dir=
+
+while [ "$1" != "" ]; do
+    case $1 in
+        -f | --file )           shift
+                                filename=$1
+                                echo "using $filename"
+                                ;;
+        ls | l )                ls $BASEPATH/sites/
+                                exit
+                                ;;
+        -h | --help)            usage_remove
+                                exit
+                                ;;
+        * )                     filename=$1
+                                ;;
+    esac
+    shift
 done
 
+if [ "$filename" != "" ]; then
+  othername=`ls $BASEPATH/sites/ | grep $filename`
+  if [ -f "$BASEPATH/sites/$othername" ]; then
+    filename=$othername
+    echo "-f was triggered, Parameter: $BASEPATH/sites/$filename" >&2
+  else
+    echo $othername
+    echo "Matched many hosts, continue."
+  fi
+fi
+
+cd $BASEPATH/sites
+printf "Enter the config file (tab to complete): "
+read -e othername
+filename=$othername
+if [ -f $BASEPATH/sites/$filename ]; then
+  echo "Using $BASEPATH/sites/$filename"
+else
+  echo "No host file found!"
+  exit
+fi
+eval $(parse_yaml $BASEPATH/sites/$filename)
+
 if [ -z "$host" ]; then
-  printf "Enter Hostname: "
+  printf "Enter Hostname (example.dev): "
   read host
 fi
+
 if [ -z "$apache" ]; then
-  printf "Apache [yes/no]?: "
+  printf "Apache (yes/no)?: "
   read apache
 fi
-if [ -z "$src" ]; then
-  printf "Name of source directory (case senseative): "
-  read src
+
+if [ "$apache" == "y" ] || [ "$apache" == "yes" ]; then
+  port=$APACHE_PORT
 fi
 
-echo $host
+if [ -z "$port" ]; then
+  printf "Port (Enter for static): "
+  read port
+fi
+
+if [ -z "$port" ]; then
+  port=80
+fi
+
+if [ -z "$src" ]; then
+  printf "Full path to source directory (case senseative): "
+  read src
+else
+  echo "Using source directory '$src'"
+fi
 
 echo "Removing host..."
-
 
 if [ "$apache" = "yes" ] || [ "$apache" = "y" ]; then
   echo "Removing apache config files..."
@@ -131,4 +176,4 @@ fi
 
 sudo apachectl restart && sudo nginx -s stop && sudo nginx;
 
-echo "complete!"
+echo "$host removed!"
