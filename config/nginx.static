@@ -1,0 +1,13 @@
+server {
+  listen    80;
+  server_name  HOSTNAME;
+  access_log off;
+  error_log  /var/log/HOSTNAME.error.log;
+
+  location / {
+    index index.htm index.html;
+    client_max_body_size    10m;
+    client_body_buffer_size 128k;
+  }
+}
+

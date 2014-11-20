@@ -1,5 +1,5 @@
 # Source directory/path.
-SRCPATH: /Users/patrick
+SRCPATH:
 # Where your apache source files are located.
 APACHE_SRCPATH: /var/www
 # NGINX source files.

@@ -1,5 +1,5 @@
 #enabled!/bin/bash
-SCRIPTDIR=/Users/patrick/shellscripts/add-host
+SCRIPTDIR=/Users/patrick/sh/add-host
 BASEPATH=$SCRIPTDIR
 SUCCESS=0
 

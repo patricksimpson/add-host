@@ -6,54 +6,86 @@ SUCCESS=0
 source "$BASEPATH/inc/functions.sh"
 eval $(parse_yaml $BASEPATH/config/config.yml)
 
-while getopts ":f:" opt; do
-  case $opt in
-    f)
-      echo "-f was triggered, Parameter: $OPTARG" >&2
-      eval $(parse_yaml $OPTARG)
-      ;;
-    \?)
-      echo "Invalid option: -$OPTARG" >&2
-      exit 1
-      ;;
-  esac
+function usage
+{
+      echo "usage: addhost [[[-f configfile ] [-d /path/to/source/files]]]"
+}
+
+filename=
+dir=
+
+while [ "$1" != "" ]; do
+    case $1 in
+        -f | --file )           shift
+                                filename=$1
+                                echo "using $filename"
+                                ;;
+        -d | --dir)             shift
+                                src=$1
+                                echo "using $src"
+                                ;;
+        . )                     src=`pwd`
+                                echo "using $src"
+                                ;;
+        -h | --help)           usage
+                                exit
+                                ;;
+        * )                     usage
+                                exit 1
+    esac
+    shift
 done
 
+if [ "$filename" != "" ]; then
+  echo "-f was triggered, Parameter: $filename" >&2
+  eval $(parse_yaml $filename)
+fi
+
 if [ -z "$host" ]; then
-  printf "Enter Hostname: "
+  printf "Enter Hostname (example.dev): "
   read host
 fi
-if [ -z "$port" ]; then
-  printf "Port: "
-  read port
-fi
+
 if [ -z "$apache" ]; then
   printf "Apache [yes/no]?: "
   read apache
 fi
+
+if [ "$apache" == "y" ] || [ "$apache" == "yes" ]; then
+  port=8080
+fi
+
+if [ -z "$port" ]; then
+  printf "Port (press enter for static): "
+  read port
+fi
+
+if [ -z "$port" ]; then
+  port=80
+fi
+
 if [ -z "$src" ]; then
-  printf "Name of source directory (case senseative): "
+  printf "Full path to source directory (case senseative): "
   read src
-fi
-
-echo $host
-
-if [ -e $BASEPATH/sites/$host.yml ]; then
-  if [ -z $OPTARG ]; then
-    echo ""
-    echo "##############################"
-    echo "Next time, use the config file... :-)"
-    echo "sites/$host.yml"
-    echo "##############################"
-    echo ""
-  fi
 else
-  echo "Creating YML config file for future reference."
-  echo "host: $host" >> $BASEPATH/sites/$host.yml
-  echo "port: $port" >> $BASEPATH/sites/$host.yml
-  echo "apache: $apache" >> $BASEPATH/sites/$host.yml
-  echo "src: $src" >> $BASEPATH/sites/$host.yml
+  echo "Using source directory '$src'"
 fi
+
+echo ""
+echo "host: $host"
+echo "port: $port"
+echo "apache: $apache"
+echo "src: $src"
+echo ""
+
+echo "Creating YML config file for future reference."
+echo "host: $host" > $BASEPATH/sites/$host.yml
+echo "port: $port" >> $BASEPATH/sites/$host.yml
+echo "apache: $apache" >> $BASEPATH/sites/$host.yml
+echo "src: $src" >> $BASEPATH/sites/$host.yml
+
+echo $BASEPATH/sites/$host.yml
+echo ""
 
 SUCCESS=0
 
@@ -96,11 +128,11 @@ if [ "$apache" = "yes" ] || [ "$apache" = "y" ]; then
     ln -s $NGINX_NEW_CONFIG_FILE $NGINX_BASEPATH/sites-enabled/$host
   fi
 
-  if [ $SRCPATH ]; then
+  if [ $src]; then
     if [ -h $APACHE_SRCPATH/$host ]; then
       echo "Omitting link to apache source files"
     else
-      ln -s $SRCPATH/$src $APACHE_SRCPATH/$host
+      ln -s $src $APACHE_SRCPATH/$host
     fi
   fi
 
@@ -115,10 +147,17 @@ if [ "$apache" = "yes" ] || [ "$apache" = "y" ]; then
   fi
 
 else
-  echo "Creating config file for passenger server"
-  CONFIG_FILE=$BASEPATH/config/nginx.other
-  NEW_CONFIG_FILE=$BASEPATH/hosts/$host.nginx
-  TEMP_CONFIG_FILE=$BASEPATH/temp/nginx.other
+  if [ $port == 80 ]; then
+    echo "Creating static webserver"
+    CONFIG_FILE=$BASEPATH/config/nginx.static
+    NEW_CONFIG_FILE=$BASEPATH/hosts/$host.nginx
+    TEMP_CONFIG_FILE=$BASEPATH/temp/nginx.static
+  else
+    echo "Creating config file for passenger server"
+    CONFIG_FILE=$BASEPATH/config/nginx.other
+    NEW_CONFIG_FILE=$BASEPATH/hosts/$host.nginx
+    TEMP_CONFIG_FILE=$BASEPATH/temp/nginx.other
+  fi
   if [ -e $NEW_CONFIG_FILE ]
   then
     rm $NEW_CONFIG_FILE
@@ -140,11 +179,11 @@ else
 
 fi
 
-if [ $SRCPATH ]; then
+if [ $src ]; then
   if [ -d $NGINX_SRCPATH/$host ]; then
     echo "Omitting link to nginx source files"
   else
-    ln -s $SRCPATH/$src $NGINX_SRCPATH/$host
+    ln -s $src $NGINX_SRCPATH/$host
   fi
 fi
 
